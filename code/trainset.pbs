@@ -30,7 +30,7 @@ cd /work/bmath27/filters
 qiime feature-classifier classify-sklearn \
   --i-classifier data/references/classifier.qza \
   --i-reads data/qiime/rep-seqs.qza \
-  --p-reads-per-batch 9 \
+  --p-reads-per-batch 7 \
   --p-n-jobs -1 \
   --o-classification data/references/taxonomy.qza
 
