@@ -46,8 +46,9 @@ qiime demux summarize \
   --o-table data/qiime/table.qza \
   --o-representative-sequences data/qiime/rep-seqs.qza \
   --o-denoising-stats data/qiime/denoising-stats.qza
-
-  qiime feature-table summarize \
+  --verbose
+ 
+ qiime feature-table summarize \
   --i-table data/qiime/table.qza \
   --o-visualization data/qiime/table.qzv \
   --m-sample-metadata-file data/raw/metadata.tsv
