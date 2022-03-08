@@ -50,7 +50,7 @@ qiime demux summarize \
   qiime feature-table summarize \
   --i-table data/qiime/table.qza \
   --o-visualization data/qiime/table.qzv \
-  --m-sample-metadata-file data/references/metadata.tsv
+  --m-sample-metadata-file data/raw/metadata.tsv
 
 qiime feature-table tabulate-seqs \
   --i-data data/qiime/rep-seqs.qza \
