@@ -1,4 +1,4 @@
-#SampleID	BarcodeSequence	LinkerPrimerSequence	filtration_level	volume(ml)	filter_time(hr)	time_point	Description
+#SampleID	BarcodeSequence	LinkerPrimerSequence	filtration_level	volume_ml	filter_time_hr	time_point	Description
 #q2:types	categorical	categorical	categorical	numeric	numeric	categorical	categorical
 f1a	AGGGCTATAGTT		one_micron	1000	2	1	
 f1b	CTCACGCAATGC		one_micron	1000	2	1	
