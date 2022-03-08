@@ -1,0 +1,82 @@
+#!/bin/bash
+#PBS -q checkpt
+#PBS -A hpc_houmicro06
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=0:10:00
+#PBS -o /work/bmath27/sterivex/
+#PBS -j oe
+#PBS -N diversity
+#PBS -m abe
+#PBS -M bmath27@lsu.edu
+date
+
+cd /work/bmath27/
+unset PYTHONPATH
+unset PYTHONUSERBASE
+source activate qiime2-2021.11
+cd /work/bmath27/sterivex
+
+# Alpha and Beta Diversity Analysis
+    #Sampling depth based upon 1st quartile range from March 2022 run of samples
+qiime diversity core-metrics-phylogenetic \
+    --i-phylogeny data/qiime/rooted-tree.qza \
+    --i-table data/qiime/table.qza \
+    --p-sampling-depth 11409 \
+    --m-metadata-file data/references/combined.metadata.tsv \
+    --output-dir data/process/core-metrics-results
+
+qiime diversity alpha-group-significance \
+        --i-alpha-diversity data/process/core-metrics-results/evenness_vector.qza \
+        --m-metadata-file data/references/combined.metadata.tsv \
+        --o-visualization data/process/core-metrics-results/evenness-group-significance.qzv
+
+qiime diversity alpha-group-significance \
+        --i-alpha-diversity data/process/core-metrics-results/faith_pd_vector.qza \
+        --m-metadata-file data/references/combined.metadata.tsv \
+        --o-visualization data/process/core-metrics-results/faith-pd-group-significance.qzv
+
+qiime diversity beta-group-significance \
+	  --i-distance-matrix data/process/core-metrics-results/unweighted_unifrac_distance_matrix.qza \
+          --m-metadata-file data/references/combined.metadata.tsv \
+          --m-metadata-column Site \
+          --o-visualization data/process/core-metrics-results/unweighted-unifrac-station-significance-tc.qzv \
+          --p-pairwise
+
+qiime diversity beta-group-significance \
+          --i-distance-matrix data/process/core-metrics-results/unweighted_unifrac_distance_matrix.qza \
+          --m-metadata-file data/references/combined.metadata.tsv \
+          --m-metadata-column Location \
+          --o-visualization data/process/core-metrics-results/unweighted-unifrac-station-significance-time.qzv \
+          --p-pairwise
+
+qiime diversity beta-group-significance \
+          --i-distance-matrix data/process/core-metrics-results/unweighted_unifrac_distance_matrix.qza \
+          --m-metadata-file data/references/combined.metadata.tsv \
+          --m-metadata-column Event \
+          --o-visualization data/process/core-metrics-results/unweighted-unifrac-station-significance-event.qzv \
+          --p-pairwise
+# Ordination
+qiime emperor plot \
+  --i-pcoa data/process/core-metrics-results/unweighted_unifrac_pcoa_results.qza \
+  --m-metadata-file data/references/combined.metadata.tsv \
+  --p-custom-axes Location \
+  --o-visualization data/process/core-metrics-results/unweighted-unifrac-emperor-time-point.qzv
+
+qiime emperor plot \
+  --i-pcoa data/process/core-metrics-results/bray_curtis_pcoa_results.qza \
+  --m-metadata-file data/references/combined.metadata.tsv \
+  --p-custom-axes Location \
+  --o-visualization data/process/core-metrics-results/bray-curtis-emperor-days-time-point.qzv
+
+#Alpha Rarefaction Plotting
+	# * Choose max depth based on median frequency per sample value in table.qzv file
+  #based upon median frequency from March 2022 run of samples
+qiime diversity alpha-rarefaction \
+  --i-table data/qiime/table.qza \
+  --i-phylogeny data/qiime/rooted-tree.qza \
+  --p-max-depth 18600 \
+  --m-metadata-file data/references/combined.metadata.tsv \
+  --o-visualization data/process/alpha-rarefaction.qzv
+
+date
+exit 0

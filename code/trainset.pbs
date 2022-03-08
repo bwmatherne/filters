@@ -1,0 +1,123 @@
+#!/bin/bash
+#PBS -q bigmem
+#PBS -A hpc_houmicro06
+#PBS -l nodes=1:ppn=28
+#PBS -l walltime=12:00:00
+#PBS -o /work/bmath27/sterivex/
+#PBS -j oe
+#PBS -N trainset
+#PBS -m abe
+#PBS -M bmath27@lsu.edu
+date
+
+cd /work/bmath27/
+unset PYTHONPATH
+unset PYTHONUSERBASE
+source activate qiime2-2021.11
+cd /work/bmath27/sterivex
+
+#============================================================
+
+# Reference https://docs.qiime2.org/2019.7/tutorials/feature-classifier/
+  # Newer version https://docs.qiime2.org/2022.2/tutorials/feature-classifier/
+# Data Resources: https://docs.qiime2.org/2022.2/data-resources/
+
+#============================================================
+
+# BELOW SCRIPT USED WITH 2019.7 QIIME2
+
+# Install correct version of scikit-learn
+#conda install --override-channels -c defaults scikit-learn=0.21.2
+	# Enter 'y' to proceed
+
+#============================================================
+#If short on time, download Naive Bayes classifier trained on Silva 132 99% OTUs from 515F/806R
+
+# wget https://data.qiime2.org/2019.7/common/silva-132-99-515-806-nb-classifier.qza
+# mv silva-132-99-515-806-nb-classifier.qza data/references/
+
+#============================================================
+
+#Obtaining and importing reference data sets
+	#Download latest silva release
+#Code for Silva 132 Release:
+    #wget https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip
+    #mv Silva_132_release.zip data/references/
+    #unzip data/references/Silva_132_release.zip
+    #rm data/references/Silva_132_release.zip
+#Code for Silva 138 release (https://docs.qiime2.org/2022.2/data-resources/)
+wget https://data.qiime2.org/2022.2/common/silva-138-99-seqs.qza
+mv silva-138-99-seqs.qza data/references/
+wget https://data.qiime2.org/2022.2/common/silva-138-99-tax.qza
+mv silva-138-99-tax.qza data/references/
+
+#============================================================
+#Silva 132 Files used for Training:
+	# SILVA_132_QIIME_release/rep_set/rep_set_16S_only/99/silva_132_99_16S.fna
+	# SILVA_132_QIIME_release/taxonomy/16S_only/99/taxonomy_all_levels.txt
+	# data/qiime/rep-seqs.qza
+
+#Code for 132
+#qiime tools import \
+#  --type 'FeatureData[Sequence]' \
+#  --input-path SILVA_132_QIIME_release/rep_set/rep_set_16S_only/99/silva_132_99_16S.fna \
+#  --output-path code/training-feature-classifiers/99_otus.qza
+
+#qiime tools import \
+#  --type 'FeatureData[Taxonomy]' \
+#  --input-format HeaderlessTSVTaxonomyFormat \
+#  --input-path SILVA_132_QIIME_release/taxonomy/16S_only/99/taxonomy_all_levels.txt \
+#  --output-path code/training-feature-classifiers/ref-taxonomy.qza
+
+#============================================================
+#Extract reference reads
+
+	# Not using p-trunc-length option since my samples are from pair end reads
+
+# Code for Silva 132
+#qiime feature-classifier extract-reads \
+#  --i-sequences code/training-feature-classifiers/99_otus.qza \
+#  --p-f-primer GTGCCAGCMGCCGCGGTAA \
+#  --p-r-primer GGACTACHVGGGTWTCTAAT \
+#  --p-min-length 100 \
+#  --p-max-length 400 \
+#  --o-reads code/training-feature-classifiers/ref-seqs.qza
+
+  qiime feature-classifier extract-reads \
+    --i-sequences data/references/silva-138-99-seqs.qza \
+    --p-f-primer GTGCCAGCMGCCGCGGTAA \
+    --p-r-primer GGACTACHVGGGTWTCTAAT \
+    --p-min-length 100 \
+    --p-max-length 400 \
+    --o-reads data/references/ref-seqs.qza
+
+#============================================================
+# Train the classifier
+
+qiime feature-classifier fit-classifier-naive-bayes \
+  --i-reference-reads data/references/ref-seqs.qza \
+  --i-reference-taxonomy data/references/silva-138-99-tax.qza \
+  --o-classifier data/references/classifier.qza
+
+# Test the classifier
+	# Calculate Reads Per Batch by using wc -l on rep-seqs to count seqs
+	# Then divide by number of processors
+
+qiime feature-classifier classify-sklearn \
+  --i-classifier data/references/classifier.qza \
+  --i-reads data/qiime/rep-seqs.qza \
+  --p-reads-per-batch 255 \
+  --p-n-jobs -1 \
+  --o-classification data/references/taxonomy.qza
+
+qiime metadata tabulate \
+  --m-input-file data/references/taxonomy.qza \
+  --o-visualization data/references/taxonomy.qzv
+
+
+# Clean-up files no longer needed
+#rm -rf __MACOSX
+#rm -rf SILVA_132_QIIME_release
+
+date
+exit 0
