@@ -1,0 +1,14 @@
+#SampleID	BarcodeSequence	LinkerPrimerSequence	filtration_level	volume(ml)	filter_time(hr)	time_point	Description
+#q2:types	categorical	categorical	categorical	numeric	numeric	categorical	categorical
+f1a	AGGGCTATAGTT		one_micron	1000	2	1	
+f1b	CTCACGCAATGC		one_micron	1000	2	1	
+f1c	TCCACCCTCTAT		one_micron	1000	2	1	
+f2a	ACATCAGGTCAC		one_micron	1000	18	2	
+f2b	GCTCCTTAGAAG		one_micron	1000	18	2	
+f2c	ATCACATTCTCC		one_micron	1000	18	2	
+r1a	CTGTAGCTTGGC		raw_water	500	2	1	
+r1b	AGTCTGTCTGCG		raw_water	350	2	1	
+r1c	GTTAGGGAGCGA		raw_water	350	2	1	
+r2a	GAACAAAGAGCG		raw_water	800	18	2	
+r2b	TAAACCTGGACA		raw_water	800	18	2	
+r2c	GGACCAAGGGAT		raw_water	800	18	2	
