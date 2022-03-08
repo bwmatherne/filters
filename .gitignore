@@ -6,6 +6,7 @@
 
 data/*/*
 !data/process/*
+!data/qiime/*qzv
 !README.md
 
 *.o*
