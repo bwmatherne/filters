@@ -8,6 +8,7 @@ data/*/*
 !data/process/*
 !README.md
 
+*.o*
 *.qsub*
 mothur*logfile
 *temp*
