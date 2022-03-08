@@ -3,31 +3,31 @@
 #PBS -A hpc_houmicro06
 #PBS -l nodes=1:ppn=20
 #PBS -l walltime=1:00:00
-#PBS -o /work/bmath27/sterivex/
+#PBS -o /work/bmath27/filters/
 #PBS -j oe
 #PBS -N taxa
 #PBS -m abe
 #PBS -M bmath27@lsu.edu
 date
 
-cd /work/bmath27/sterivex/
+cd /work/bmath27/filters/
 unset PYTHONHOME
 unset PYTHONPATH
 source activate qiime2-2021.11
-cd /work/bmath27/sterivex
+cd /work/bmath27/filters
 
 
-#qiime taxa collapse \
-#  --i-table data/qiime/table.qza \
-#  --i-taxonomy data/references/taxonomy.qza \
-#  --p-level 7 \
-#  --o-collapsed-table data/qiime/7-table.qza
+qiime taxa collapse \
+  --i-table data/qiime/table.qza \
+  --i-taxonomy data/references/taxonomy.qza \
+  --p-level 7 \
+  --o-collapsed-table data/process/7-table.qza
 
 qiime taxa barplot \
   --i-table data/qiime/table.qza \
   --i-taxonomy data/references/taxonomy.qza \
-  --m-metadata-file data/references/combined.metadata.tsv \
-  --o-visualization data/qiime/taxa-bar-plots.qzv
+  --m-metadata-file data/raw/metadata.tsv \
+  --o-visualization data/process/taxa-bar-plots.qzv
 
 
 date
