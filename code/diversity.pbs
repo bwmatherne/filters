@@ -16,8 +16,6 @@ unset PYTHONUSERBASE
 source activate qiime2-2021.11
 cd /work/bmath27/filters/
 
-#Make directory for core-metrics-results
-mkdir data/process/core-metrics-results
 
 # Alpha and Beta Diversity Analysis
     #Sampling depth set at minimum frequency since there are only 12 total samples

@@ -7,3 +7,13 @@
 # hpc_houmicro* allocation will change every so often and needs to b renewed
 
 qsub -q single -I -l walltime=01:00:00,nodes=1:ppn=8 -A hpc_houmicro06
+
+
+# QIIME2 Interactive Session
+  #Initialize conda environment
+
+cd /work/bmath27/
+unset PYTHONPATH
+unset PYTHONUSERBASE
+source activate qiime2-2021.11
+cd /work/bmath27/filters
