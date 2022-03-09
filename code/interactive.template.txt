@@ -1,0 +1,9 @@
+#Interactive job script template
+
+# Start Interactive Session on LSU HPC
+
+# Suggest running qfree command and choosing the best place to queue your job
+# Adjust walltime and ppn according to needs
+# hpc_houmicro* allocation will change every so often and needs to b renewed
+
+qsub -q single -I -l walltime=01:00:00,nodes=1:ppn=8 -A hpc_houmicro06
